@@ -2,8 +2,8 @@ name: lab1 - test & lint
 
 on:
   push:
-    paths:
-      - 'lab1/**'
+    branches:
+      - main
   pull_request:
 
 jobs:
