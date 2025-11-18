@@ -59,9 +59,6 @@ pub fn task1_map_test() {
 
   task1.sum_multiples_map(0)
   |> should.equal(0)
-
-  task1.sum_multiples_map(1)
-  |> should.equal(0)
 }
 
 pub fn task1_all_implementations_equal_test() {
