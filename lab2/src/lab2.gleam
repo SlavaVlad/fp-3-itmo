@@ -495,3 +495,44 @@ pub fn structure_equal(
     }
   }
 }
+
+// Лексикографическое сравнение двух деревьев по inorder обходу через списки
+// Время выполнения: O(n + m) где n, m - размеры деревьев
+// Грубо говоря O(n)
+pub fn compare(
+  tree1: RBTree(k, v),
+  tree2: RBTree(k, v),
+  key_compare: fn(k, k) -> Order,
+  value_compare: fn(v, v) -> Order,
+) -> Order {
+  let list1 = to_list(tree1)
+  let list2 = to_list(tree2)
+  compare_lists(list1, list2, key_compare, value_compare)
+}
+
+// Вспомогательная функция для лексикографического сравнения списков пар
+fn compare_lists(
+  list1: List(#(k, v)),
+  list2: List(#(k, v)),
+  key_compare: fn(k, k) -> Order,
+  value_compare: fn(v, v) -> Order,
+) -> Order {
+  case list1, list2 {
+    [], [] -> order.Eq
+    [], _ -> order.Lt
+    _, [] -> order.Gt
+    [head1, ..tail1], [head2, ..tail2] -> {
+      let #(k1, v1) = head1
+      let #(k2, v2) = head2
+      case key_compare(k1, k2) {
+        order.Eq -> {
+          case value_compare(v1, v2) {
+            order.Eq -> compare_lists(tail1, tail2, key_compare, value_compare)
+            ord -> ord
+          }
+        }
+        ord -> ord
+      }
+    }
+  }
+}
