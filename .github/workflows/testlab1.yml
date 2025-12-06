@@ -1,4 +1,4 @@
-name: lab1 - test & lint
+name: labs - test & lint
 
 on:
   push:
@@ -23,3 +23,10 @@ jobs:
         working-directory: lab1
       - run: gleam format --check src test
         working-directory: lab1
+
+      - run: gleam deps download
+        working-directory: lab2
+      - run: gleam test
+        working-directory: lab2
+      - run: gleam format --check src test
+        working-directory: lab2
