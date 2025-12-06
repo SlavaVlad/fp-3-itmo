@@ -1,4 +1,5 @@
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/option
 import gleam/order
@@ -28,23 +29,25 @@ fn string_equal(a: String, b: String) -> Bool {
 
 // Генерация случайных данных
 fn gk() -> Int {
-  int.random(1000) - 500
+  int.random(10_000) - 5000
 }
 
 fn gv() -> String {
-  let length = int.random(32)
+  let length = int.random(64)
   let generator: random.Generator(Int) = random.int(97, 122)
-  let seed = seed.new(42)
   // random string of given length
-  string.join(
-    list.repeat("", length)
-      |> list.map(fn(_) {
-        let code = random.sample(generator, seed)
-        let assert Ok(cp) = string.utf_codepoint(code)
-        string.from_utf_codepoints([cp])
-      }),
-    "",
-  )
+  let string =
+    string.join(
+      list.repeat("", length)
+        |> list.map(fn(_) {
+          let code = random.sample(generator, seed.random())
+          let assert Ok(cp) = string.utf_codepoint(code)
+          string.from_utf_codepoints([cp])
+        }),
+      "",
+    )
+  io.println("Generating rnd s:" <> string)
+  string
 }
 
 /// Тест создания пустого дерева
@@ -239,7 +242,7 @@ pub fn monoid_left_identity_test() {
 
   let result = lab2.concat(lab2.empty(), tree, int_compare)
 
-  lab2.equal(tree, result, int_equal, string_equal) |> should.be_true
+  lab2.semantic_equal(tree, result, int_compare, string_equal) |> should.be_true
 }
 
 /// Тест нейтрального элемента (правая единица)
@@ -255,7 +258,7 @@ pub fn monoid_right_identity_test() {
 
   let result = lab2.concat(tree, lab2.empty(), int_compare)
 
-  lab2.equal(tree, result, int_equal, string_equal) |> should.be_true
+  lab2.semantic_equal(tree, result, int_compare, string_equal) |> should.be_true
 }
 
 /// Тест ассоциативности
