@@ -6,6 +6,7 @@ packages = [
   { name = "gleam_regexp", version = "1.1.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_regexp", source = "hex", outer_checksum = "9C215C6CA84A5B35BB934A9B61A9A306EC743153BE2B0425A0D032E477B062A9" },
   { name = "gleam_stdlib", version = "0.65.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "7C69C71D8C493AE11A5184828A77110EB05A7786EBF8B25B36A72F879C3EE107" },
   { name = "gleeunit", version = "1.7.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "CD701726CBCE5588B375D157B4391CFD0F2F134CD12D9B6998A395484DE05C58" },
+  { name = "iterator", version = "0.0.5", build_tools = ["rebar3"], requirements = [], otp_app = "iterator", source = "hex", outer_checksum = "8D7FECF393DC4D62FA95005AF3F17400DC0AF18A8FE87B6EC3107FBBB6009139" },
 ]
 
 [requirements]
@@ -13,3 +14,4 @@ colored = { version = ">= 1.0.2 and < 2.0.0" }
 gleam_regexp = { version = ">= 1.1.1 and < 2.0.0" }
 gleam_stdlib = { version = ">= 0.44.0 and < 2.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
+iterator = { version = ">= 0.0.5 and < 1.0.0" }

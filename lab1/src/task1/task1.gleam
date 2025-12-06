@@ -4,6 +4,8 @@ import gleam/list
 
 // 1. Хвостовая рекурсия
 pub fn sum_multiples_tail_recursive(limit: Int) -> Int {
+  // Это всё можно оформить в одно выражение
+  // матчить лимит в 0 и в других случаях
   case limit {
     n if n <= 0 -> 0
     _ -> sum_multiples_tail_recursive_helper(limit - 1, 0)
