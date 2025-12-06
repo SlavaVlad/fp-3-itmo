@@ -1,19 +1,16 @@
-// Модуль красно-чёрного дерева с ленивыми вычислениями
-// Реализует самобалансирующееся двоичное дерево поиска с гарантированной
-// логарифмической сложностью операций вставки, удаления и поиска
-
 import gleam/option.{type Option, None, Some}
 import gleam/order.{type Order}
 
-/// Цвета узлов красно-черного дерева
-/// Red - красный узел, Black - чёрный узел
+// Цвета узлов красно-черного дерева
+// Red - красный узел, Black - чёрный узел
 pub type Color {
   Red
   Black
 }
 
-/// Ленивое значение для отложенных вычислений
-/// Позволяет откладывать создание поддеревьев до момента их использования
+// Ленивое значение для отложенных вычислений
+// Позволяет откладывать создание поддеревьев до момента их использования
+// Не знаю правильно это или нет на самом деле, в gleam вроде lazy нету встроенного
 pub type Lazy(a) {
   Thunk(fn() -> a)
   // Отложенное вычисление через функцию
@@ -21,9 +18,9 @@ pub type Lazy(a) {
   // Уже вычисленное значение
 }
 
-/// Красно-черное дерево с ленивыми вычислениями
-/// Полиморфная структура данных с ключами типа k и значениями типа v
-/// Поддерживает инварианты красно-чёрного дерева для гарантии балансировки
+// Красно-черное дерево с ленивыми вычислениями
+// Полиморфная структура данных с ключами типа k и значениями типа v
+// Поддерживает инварианты красно-чёрного дерева для гарантии балансировки
 pub type RBTree(k, v) {
   Empty
   // Пустое дерево
@@ -42,8 +39,8 @@ pub type RBTree(k, v) {
   )
 }
 
-/// Форсирует вычисление ленивого значения
-/// Если значение уже вычислено, возвращает его, иначе выполняет функцию
+// Форсирует вычисление ленивого значения
+// Если значение уже вычислено, возвращает его, иначе выполняет функцию
 fn force(lazy: Lazy(a)) -> a {
   case lazy {
     Value(val) -> val
@@ -51,20 +48,20 @@ fn force(lazy: Lazy(a)) -> a {
   }
 }
 
-/// Создаёт ленивое значение из функции
-/// Отложенное вычисление будет выполнено при первом обращении
+// Создаёт ленивое значение из функции
+// Отложенное вычисление будет выполнено при первом обращении
 fn delay(f: fn() -> a) -> Lazy(a) {
   Thunk(f)
 }
 
-/// Создаёт пустое дерево - нейтральный элемент моноида
-/// Время выполнения: O(1)
+// Создаёт пустое дерево - нейтральный элемент моноида
+// Время выполнения: O(1)
 pub fn empty() -> RBTree(k, v) {
   Empty
 }
 
-/// Проверяет, является ли дерево пустым
-/// Время выполнения: O(1)
+// Проверяет, является ли дерево пустым
+// Время выполнения: O(1)
 pub fn is_empty(tree: RBTree(k, v)) -> Bool {
   case tree {
     Empty -> True
@@ -72,7 +69,7 @@ pub fn is_empty(tree: RBTree(k, v)) -> Bool {
   }
 }
 
-/// Создаёт узел с чёрным цветом
+// Создаёт узел с чёрным цветом
 fn make_black(tree: RBTree(k, v)) -> RBTree(k, v) {
   case tree {
     Node(_, key, value, left, right) -> Node(Black, key, value, left, right)
@@ -80,7 +77,7 @@ fn make_black(tree: RBTree(k, v)) -> RBTree(k, v) {
   }
 }
 
-/// Балансировка красно-черного дерева
+// Балансировка RB tree
 fn balance(
   color: Color,
   key: k,
@@ -147,9 +144,9 @@ fn balance(
   }
 }
 
-/// Вставляет элемент в дерево с сохранением инвариантов красно-чёрного дерева
-/// Время выполнения: O(log n)
-/// compare - функция сравнения ключей, должна возвращать order.Lt, order.Eq или order.Gt
+// Вставляет элемент в дерево с сохранением инвариантов красно-чёрного дерева
+// Время выполнения: O(log n)
+// compare - функция сравнения ключей, должна возвращать order.Lt, order.Eq или order.Gt
 pub fn insert(
   tree: RBTree(k, v),
   key: k,
@@ -158,7 +155,7 @@ pub fn insert(
 ) -> RBTree(k, v) {
   let result = insert_helper(tree, key, value, compare)
   make_black(result)
-  // Гарантируем, что корень чёрный
+  // гарантия что корень чёрный
 }
 
 fn insert_helper(
@@ -192,7 +189,7 @@ fn insert_helper(
   }
 }
 
-/// Поиск элемента в дереве
+// Поиск элемента в дереве
 pub fn lookup(
   tree: RBTree(k, v),
   key: k,
@@ -209,7 +206,7 @@ pub fn lookup(
   }
 }
 
-/// Находит минимальный элемент в дереве
+// Находит минимальный элемент в дереве
 fn find_min(tree: RBTree(k, v)) -> Option(#(k, v)) {
   case tree {
     Empty -> None
@@ -221,7 +218,7 @@ fn find_min(tree: RBTree(k, v)) -> Option(#(k, v)) {
   }
 }
 
-/// Удаляет минимальный элемент из дерева
+// Удаляет минимальный элемент из дерева
 fn delete_min(tree: RBTree(k, v)) -> RBTree(k, v) {
   case tree {
     Empty -> Empty
@@ -287,7 +284,7 @@ pub fn delete(
   }
 }
 
-/// Фильтрация элементов дерева
+// Фильтрация элементов дерева
 pub fn filter(
   tree: RBTree(k, v),
   predicate: fn(k, v) -> Bool,
@@ -301,7 +298,7 @@ pub fn filter(
   })
 }
 
-/// Отображение значений в дереве
+// Отображение значений в дереве
 pub fn map(tree: RBTree(k, v), f: fn(v) -> w) -> RBTree(k, w) {
   case tree {
     Empty -> Empty
@@ -316,7 +313,7 @@ pub fn map(tree: RBTree(k, v), f: fn(v) -> w) -> RBTree(k, w) {
   }
 }
 
-/// Левая свёртка дерева
+// Левая свёртка дерева
 pub fn fold_left(tree: RBTree(k, v), acc: a, f: fn(a, k, v) -> a) -> a {
   case tree {
     Empty -> acc
@@ -328,7 +325,7 @@ pub fn fold_left(tree: RBTree(k, v), acc: a, f: fn(a, k, v) -> a) -> a {
   }
 }
 
-/// Правая свёртка дерева
+// Правая свёртка дерева
 pub fn fold_right(tree: RBTree(k, v), acc: a, f: fn(k, v, a) -> a) -> a {
   case tree {
     Empty -> acc
@@ -340,7 +337,7 @@ pub fn fold_right(tree: RBTree(k, v), acc: a, f: fn(k, v, a) -> a) -> a {
   }
 }
 
-/// Объединение двух деревьев (операция моноида)
+// Объединение двух деревьев (операция моноида)
 pub fn concat(
   tree1: RBTree(k, v),
   tree2: RBTree(k, v),
@@ -351,22 +348,22 @@ pub fn concat(
   })
 }
 
-/// Нейтральный элемент моноида (пустое дерево)
+// Нейтральный элемент моноида (пустое дерево)
 pub fn mempty() -> RBTree(k, v) {
   empty()
 }
 
-/// Размер дерева
+// Размер дерева
 pub fn size(tree: RBTree(k, v)) -> Int {
   fold_left(tree, 0, fn(acc, _, _) { acc + 1 })
 }
 
-/// Преобразование дерева в список пар
+// Преобразование дерева в список пар
 pub fn to_list(tree: RBTree(k, v)) -> List(#(k, v)) {
   fold_right(tree, [], fn(key, value, acc) { [#(key, value), ..acc] })
 }
 
-/// Создание дерева из списка пар
+// Создание дерева из списка пар
 pub fn from_list(
   list: List(#(k, v)),
   compare: fn(k, k) -> Order,
@@ -378,7 +375,7 @@ pub fn from_list(
   })
 }
 
-/// Вспомогательная функция для свёртки списка
+// Вспомогательная функция для свёртки списка
 fn list_fold_left(list: List(a), acc: b, f: fn(b, a) -> b) -> b {
   case list {
     [] -> acc
@@ -386,9 +383,9 @@ fn list_fold_left(list: List(a), acc: b, f: fn(b, a) -> b) -> b {
   }
 }
 
-/// Эффективная проверка равенства двух деревьев
-/// Сравнивает деревья структурно без преобразования в списки
-/// Время выполнения: O(min(n, m)) где n, m - размеры деревьев
+// Эффективная проверка равенства двух деревьев
+// Сравнивает деревья структурно без преобразования в списки
+// Время выполнения: O(min(n, m)) где n, m - размеры деревьев
 pub fn equal(
   tree1: RBTree(k, v),
   tree2: RBTree(k, v),
@@ -398,8 +395,8 @@ pub fn equal(
   equal_helper(tree1, tree2, key_compare, value_compare)
 }
 
-/// Вспомогательная функция для структурного сравнения деревьев
-/// Использует короткое замыкание при первом несовпадении
+// Вспомогательная функция для структурного сравнения деревьев
+// Использует замыкание при первом несовпадении
 fn equal_helper(
   tree1: RBTree(k, v),
   tree2: RBTree(k, v),
@@ -409,29 +406,27 @@ fn equal_helper(
   case tree1, tree2 {
     // Оба дерева пустые - равны
     Empty, Empty -> True
-    
-    // Одно пустое, другое нет - не равны
+
     Empty, _ -> False
     _, Empty -> False
-    
-    // Оба узла - сравниваем структурно
+
     Node(color1, key1, value1, left1, right1),
-    Node(color2, key2, value2, left2, right2) -> {
-      // Быстрая проверка: цвета должны совпадать
-      color1 == color2 &&
+      Node(color2, key2, value2, left2, right2)
+    -> {
+      color1 == color2
       // Ключи должны быть равны
-      key_compare(key1, key2) &&
+      && key_compare(key1, key2)
       // Значения должны быть равны
-      value_compare(value1, value2) &&
+      && value_compare(value1, value2)
       // Рекурсивно проверяем левые поддеревья (ленивые)
-      equal_helper(force(left1), force(left2), key_compare, value_compare) &&
+      && equal_helper(force(left1), force(left2), key_compare, value_compare)
       // Рекурсивно проверяем правые поддеревья (ленивые)
-      equal_helper(force(right1), force(right2), key_compare, value_compare)
+      && equal_helper(force(right1), force(right2), key_compare, value_compare)
     }
   }
 }
 
-/// Проверка, содержится ли ключ в дереве
+// Проверка, содержится ли ключ в дереве
 pub fn contains(tree: RBTree(k, v), key: k, compare: fn(k, k) -> Order) -> Bool {
   case lookup(tree, key, compare) {
     Some(_) -> True
@@ -439,19 +434,19 @@ pub fn contains(tree: RBTree(k, v), key: k, compare: fn(k, k) -> Order) -> Bool 
   }
 }
 
-/// Получение всех ключей дерева
+// Получение всех ключей дерева
 pub fn keys(tree: RBTree(k, v)) -> List(k) {
   fold_right(tree, [], fn(key, _, acc) { [key, ..acc] })
 }
 
-/// Получение всех значений дерева
+// Получение всех значений дерева
 pub fn values(tree: RBTree(k, v)) -> List(v) {
   fold_right(tree, [], fn(_, value, acc) { [value, ..acc] })
 }
 
-/// Семантическое равенство деревьев - сравнивает содержимое независимо от структуры
-/// Два дерева семантически равны, если содержат одинаковые пары ключ-значение
-/// Время выполнения: O(n log n) из-за необходимости итерации
+// Семантическое равенство деревьев - сравнивает содержимое независимо от структуры
+// Два дерева семантически равны, если содержат одинаковые пары ключ-значение
+// Время выполнения: O(n log n) из-за необходимости итерации
 pub fn semantic_equal(
   tree1: RBTree(k, v),
   tree2: RBTree(k, v),
@@ -464,8 +459,8 @@ pub fn semantic_equal(
     True -> {
       // Проверяем, что все элементы из tree1 есть в tree2 с теми же значениями
       fold_left(tree1, True, fn(acc, key, value) {
-        acc && 
-        case lookup(tree2, key, key_order) {
+        acc
+        && case lookup(tree2, key, key_order) {
           Some(other_value) -> value_equal(value, other_value)
           None -> False
         }
@@ -474,8 +469,8 @@ pub fn semantic_equal(
   }
 }
 
-/// Сравнение с игнорированием цветов узлов (только структура и данные)
-/// Полезно когда важна только логическая структура дерева поиска
+// Сравнение с игнорированием цветов узлов (только структура и данные)
+// Полезно когда важна только логическая структура дерева поиска
 pub fn structure_equal(
   tree1: RBTree(k, v),
   tree2: RBTree(k, v),
@@ -486,13 +481,17 @@ pub fn structure_equal(
     Empty, Empty -> True
     Empty, _ -> False
     _, Empty -> False
-    Node(_, key1, value1, left1, right1),
-    Node(_, key2, value2, left2, right2) -> {
+    Node(_, key1, value1, left1, right1), Node(_, key2, value2, left2, right2) -> {
       // Игнорируем цвет, сравниваем только ключи, значения и структуру
-      key_compare(key1, key2) &&
-      value_compare(value1, value2) &&
-      structure_equal(force(left1), force(left2), key_compare, value_compare) &&
-      structure_equal(force(right1), force(right2), key_compare, value_compare)
+      key_compare(key1, key2)
+      && value_compare(value1, value2)
+      && structure_equal(force(left1), force(left2), key_compare, value_compare)
+      && structure_equal(
+        force(right1),
+        force(right2),
+        key_compare,
+        value_compare,
+      )
     }
   }
 }

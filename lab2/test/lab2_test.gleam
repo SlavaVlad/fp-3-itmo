@@ -24,16 +24,14 @@ fn string_equal(a: String, b: String) -> Bool {
   a == b
 }
 
-// Unit тесты
-
-/// Тест создания пустого дерева
+// Тест создания пустого дерева
 pub fn empty_tree_test() {
   let tree = lab2.empty()
   lab2.is_empty(tree) |> should.be_true
   lab2.size(tree) |> should.equal(0)
 }
 
-/// Тест вставки одного элемента
+// Тест вставки одного элемента
 pub fn single_insert_test() {
   let tree =
     lab2.empty()
@@ -45,7 +43,7 @@ pub fn single_insert_test() {
   lab2.lookup(tree, 10, int_compare) |> should.equal(option.None)
 }
 
-/// Тест множественных вставок
+// Тест множественных вставок
 pub fn multiple_insert_test() {
   let tree =
     lab2.empty()
@@ -63,7 +61,7 @@ pub fn multiple_insert_test() {
   lab2.lookup(tree, 9, int_compare) |> should.equal(option.Some("nine"))
 }
 
-/// Тест удаления элементов
+// Тест удаления элементов
 pub fn delete_test() {
   let tree =
     lab2.empty()
@@ -78,7 +76,7 @@ pub fn delete_test() {
   lab2.lookup(tree, 7, int_compare) |> should.equal(option.Some("seven"))
 }
 
-/// Тест фильтрации
+// Тест фильтрации
 pub fn filter_test() {
   let tree =
     lab2.empty()
@@ -96,7 +94,7 @@ pub fn filter_test() {
   lab2.contains(filtered, 1, int_compare) |> should.be_false
 }
 
-/// Тест отображения
+// Тест отображения
 pub fn map_test() {
   let tree =
     lab2.empty()
@@ -111,7 +109,7 @@ pub fn map_test() {
   lab2.lookup(mapped, 3, int_compare) |> should.equal(option.Some(60))
 }
 
-/// Тест левой свёртки
+// Тест левой свёртки
 pub fn fold_left_test() {
   let tree =
     lab2.empty()
@@ -123,7 +121,7 @@ pub fn fold_left_test() {
   sum |> should.equal(60)
 }
 
-/// Тест правой свёртки
+// Тест правой свёртки
 pub fn fold_right_test() {
   let tree =
     lab2.empty()
@@ -136,7 +134,7 @@ pub fn fold_right_test() {
   result |> string.length |> should.equal(3)
 }
 
-/// Тест преобразования в список и обратно
+// Тест преобразования в список и обратно
 pub fn to_from_list_test() {
   let original_list = [#(1, "one"), #(2, "two"), #(3, "three")]
   let tree = lab2.from_list(original_list, int_compare)
@@ -151,7 +149,7 @@ pub fn to_from_list_test() {
 
 // Тесты свойств моноида
 
-/// Тест нейтрального элемента (левая единица)
+// Тест нейтрального элемента (левая единица)
 pub fn monoid_left_identity_test() {
   let tree =
     lab2.empty()
@@ -163,7 +161,7 @@ pub fn monoid_left_identity_test() {
   lab2.equal(tree, result, int_equal, string_equal) |> should.be_true
 }
 
-/// Тест нейтрального элемента (правая единица)
+// Тест нейтрального элемента (правая единица)
 pub fn monoid_right_identity_test() {
   let tree =
     lab2.empty()
@@ -175,7 +173,7 @@ pub fn monoid_right_identity_test() {
   lab2.equal(tree, result, int_equal, string_equal) |> should.be_true
 }
 
-/// Тест ассоциативности
+// Тест ассоциативности
 pub fn monoid_associativity_test() {
   let tree1 = lab2.empty() |> lab2.insert(1, "one", int_compare)
   let tree2 = lab2.empty() |> lab2.insert(2, "two", int_compare)
@@ -197,7 +195,7 @@ pub fn monoid_associativity_test() {
   lab2.contains(right_assoc, 3, int_compare) |> should.be_true
 }
 
-/// Тест инвариантов красно-чёрного дерева (упрощённая проверка)
+// Тест инвариантов красно-чёрного дерева (упрощённая проверка)
 pub fn red_black_invariant_test() {
   // Создаём большое дерево и проверяем, что поиск работает корректно
   let tree =
@@ -228,7 +226,7 @@ pub fn red_black_invariant_test() {
   all_found |> should.be_true
 }
 
-/// Тест обновления существующего ключа
+// Тест обновления существующего ключа
 pub fn update_existing_key_test() {
   let tree =
     lab2.empty()
@@ -239,7 +237,7 @@ pub fn update_existing_key_test() {
   lab2.lookup(tree, 1, int_compare) |> should.equal(option.Some("new"))
 }
 
-/// Тест свойства: insert -> lookup должен возвращать вставленное значение
+// Тест свойства: insert -> lookup должен возвращать вставленное значение
 pub fn insert_lookup_property_test() {
   let test_cases = [
     #(1, "one"),
@@ -255,7 +253,7 @@ pub fn insert_lookup_property_test() {
   })
 }
 
-/// Тест свойства: size увеличивается при вставке новых элементов
+// Тест свойства: size увеличивается при вставке новых элементов
 pub fn insert_size_property_test() {
   let tree = lab2.empty()
   lab2.size(tree) |> should.equal(0)
@@ -274,7 +272,7 @@ pub fn insert_size_property_test() {
   lab2.size(tree4) |> should.equal(3)
 }
 
-/// Тест свойства: filter сохраняет порядок и структуру
+// Тест свойства: filter сохраняет порядок и структуру
 pub fn filter_property_test() {
   let original =
     lab2.from_list(
@@ -298,7 +296,7 @@ pub fn filter_property_test() {
   lab2.contains(partial_filter, 5, int_compare) |> should.be_true
 }
 
-/// Тест свойства: map сохраняет структуру дерева
+// Тест свойства: map сохраняет структуру дерева
 pub fn map_property_test() {
   let original = lab2.from_list([#(1, 10), #(2, 20), #(3, 30)], int_compare)
 
@@ -314,7 +312,7 @@ pub fn map_property_test() {
   lab2.lookup(doubled, 3, int_compare) |> should.equal(option.Some(60))
 }
 
-/// Тест свойства: fold_left и fold_right дают корректные результаты
+// Тест свойства: fold_left и fold_right дают корректные результаты
 pub fn fold_property_test() {
   let tree =
     lab2.from_list([#(1, 1), #(2, 2), #(3, 3), #(4, 4), #(5, 5)], int_compare)
@@ -334,7 +332,7 @@ pub fn fold_property_test() {
   count_right |> should.equal(5)
 }
 
-/// Тест свойства: to_list -> from_list должно давать эквивалентное дерево
+// Тест свойства: to_list -> from_list должно давать эквивалентное дерево
 pub fn list_roundtrip_property_test() {
   let original_list = [#(3, "c"), #(1, "a"), #(4, "d"), #(2, "b")]
   let tree = lab2.from_list(original_list, int_compare)
@@ -352,7 +350,7 @@ pub fn list_roundtrip_property_test() {
   })
 }
 
-/// Тест инвариантов моноида (коммутативность для деревьев с разными ключами)
+// Тест инвариантов моноида (коммутативность для деревьев с разными ключами)
 pub fn monoid_commutativity_test() {
   let tree1 = lab2.from_list([#(1, "a"), #(2, "b")], int_compare)
   let tree2 = lab2.from_list([#(3, "c"), #(4, "d")], int_compare)
@@ -370,4 +368,42 @@ pub fn monoid_commutativity_test() {
     lab2.contains(concat1, key, int_compare) |> should.be_true
     lab2.contains(concat2, key, int_compare) |> should.be_true
   })
+}
+
+// Тест семантического равенства деревьев
+// Проверяет, что деревья с одинаковым содержимым, но разной структурой считаются равными
+pub fn semantic_equal_test() {
+  // Создаём два дерева с одинаковыми данными, но разным порядком вставки
+  let tree1 =
+    lab2.empty()
+    |> lab2.insert(2, "two", int_compare)
+    |> lab2.insert(1, "one", int_compare)
+    |> lab2.insert(3, "three", int_compare)
+
+  let tree2 =
+    lab2.empty()
+    |> lab2.insert(1, "one", int_compare)
+    |> lab2.insert(3, "three", int_compare)
+    |> lab2.insert(2, "two", int_compare)
+
+  // Семантически они должны быть равны
+  lab2.semantic_equal(tree1, tree2, int_compare, string_equal) |> should.be_true
+  // Структурно они могут быть разными (зависит от балансировки)
+  // lab2.equal(tree1, tree2, int_equal, string_equal) может быть false
+}
+
+// Тест структурного равенства без учёта цветов узлов
+pub fn structure_equal_test() {
+  let tree1 =
+    lab2.empty()
+    |> lab2.insert(2, "two", int_compare)
+    |> lab2.insert(1, "one", int_compare)
+
+  let tree2 =
+    lab2.empty()
+    |> lab2.insert(2, "two", int_compare)
+    |> lab2.insert(1, "one", int_compare)
+
+  // Структурно должны быть равны (игнорируя цвета)
+  lab2.structure_equal(tree1, tree2, int_equal, string_equal) |> should.be_true
 }
