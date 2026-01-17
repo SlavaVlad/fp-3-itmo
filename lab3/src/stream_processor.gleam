@@ -31,8 +31,14 @@ pub fn process_point(
   let #(results, new_last_x) =
     process_all_methods(state.methods, new_points, state.last_x, state.step, [])
 
+  // Обновляем last_x только если были результаты
+  let updated_last_x = case list.is_empty(results) {
+    True -> state.last_x
+    False -> Some(new_last_x)
+  }
+
   let new_state =
-    StreamState(..state, points: new_points, last_x: Some(new_last_x))
+    StreamState(..state, points: new_points, last_x: updated_last_x)
 
   #(new_state, results)
 }
@@ -157,7 +163,6 @@ fn process_newton(
   }
 }
 
-// Вычислить оставшиеся точки
 pub fn finalize(state: StreamState) -> List(InterpolationResult) {
   case list.last(state.points) {
     Error(_) -> []
@@ -170,15 +175,53 @@ pub fn finalize(state: StreamState) -> List(InterpolationResult) {
           }
         Some(x) -> x +. state.step
       }
+      // При EOF конечная точка - это последняя входная точка
       let x_end = last_point.x
 
       case x_start >. x_end {
-        True -> []
+        True -> {
+          // Даже если x_start > x_end, нужно вывести последнюю точку
+          case state.last_x {
+            Some(last_x) ->
+              case last_x <. x_end {
+                True ->
+                  // Выводим только последнюю точку
+                  list.flat_map(state.methods, fn(method) {
+                    finalize_method(method, state.points, x_end)
+                  })
+                False -> []
+              }
+            None -> []
+          }
+        }
         False -> {
           list.flat_map(state.methods, fn(method) {
             process_method(method, state.points, state.step, x_start, x_end)
           })
         }
+      }
+    }
+  }
+}
+
+// Вычислить значение для конкретной точки x при финализации
+fn finalize_method(
+  method: InterpolationMethod,
+  points: List(Point),
+  x: Float,
+) -> List(InterpolationResult) {
+  case method {
+    Linear -> {
+      case interpolate_linear(points, x) {
+        Ok(y) -> [InterpolationResult("linear", Point(x, y))]
+        Error(_) -> []
+      }
+    }
+    Newton(n) -> {
+      let window = take_last(points, n)
+      case interpolate_newton(window, x) {
+        Ok(y) -> [InterpolationResult("newton", Point(x, y))]
+        Error(_) -> []
       }
     }
   }

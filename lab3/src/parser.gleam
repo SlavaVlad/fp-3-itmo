@@ -85,10 +85,38 @@ pub fn format_result(method: String, x: Float, y: Float) -> String {
 }
 
 fn format_float(f: Float) -> String {
-  // Проверяем, является ли число целым
-  let rounded = float.round(f)
-  case float.loosely_equals(f, int.to_float(rounded), 0.0001) {
-    True -> int.to_string(rounded)
-    False -> float.to_string(f)
+  // Округляем до 4
+  let scaled = f *. 10_000.0
+  let rounded_scaled = float.round(scaled)
+  let rounded_val = int.to_float(rounded_scaled) /. 10_000.0
+  let rounded_int = float.round(rounded_val)
+
+  case float.loosely_equals(rounded_val, int.to_float(rounded_int), 0.0001) {
+    True -> int.to_string(rounded_int)
+    False -> {
+      // Форматируем с точностью 4 знака
+      let s = float.to_string(rounded_val)
+      trim_trailing_zeros(s)
+    }
+  }
+}
+
+fn trim_trailing_zeros(s: String) -> String {
+  case string.contains(s, ".") {
+    False -> s
+    True -> {
+      let chars = string.to_graphemes(s)
+      let trimmed = trim_zeros_from_end(list.reverse(chars))
+      string.concat(list.reverse(trimmed))
+    }
+  }
+}
+
+fn trim_zeros_from_end(chars: List(String)) -> List(String) {
+  case chars {
+    [] -> []
+    ["0", ..rest] -> trim_zeros_from_end(rest)
+    [".", ..rest] -> rest
+        _ -> chars
   }
 }
