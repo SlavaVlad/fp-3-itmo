@@ -117,6 +117,6 @@ fn trim_zeros_from_end(chars: List(String)) -> List(String) {
     [] -> []
     ["0", ..rest] -> trim_zeros_from_end(rest)
     [".", ..rest] -> rest
-        _ -> chars
+    _ -> chars
   }
 }

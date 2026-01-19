@@ -7,6 +7,7 @@ import stream_processor.{type StreamState}
 
 // Контроллер
 
+// Этого почему-то нет в gleam/io. bread
 @external(erlang, "lab3_ffi", "get_args")
 fn get_args() -> List(String)
 
